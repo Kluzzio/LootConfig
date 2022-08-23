@@ -24,41 +24,30 @@ public class ConfigManager {
         if (!configFile.exists()) {
             try {
                 // Config file string
-                String configFileText = "{\n" +
-                        "  \"LoadPoolsAtRuntime\": false,\n" +
-                        "  \"Names\": {\n" +
-                        "    \"Common\": {\n" +
-                        "      \"MinRolls\": 1,\n" +
-                        "      \"MaxRolls\": 2\n" +
-                        "    },\n" +
-                        "    \"Uncommon\": {\n" +
-                        "      \"MinRolls\": 1,\n" +
-                        "      \"MaxRolls\": 2\n" +
-                        "    },\n" +
-                        "    \"Rare\": {\n" +
-                        "      \"MinRolls\": 1,\n" +
-                        "      \"MaxRolls\": 3\n" +
-                        "    },\n" +
-                        "    \"SuperRare\": {\n" +
-                        "      \"MinRolls\": 2,\n" +
-                        "      \"MaxRolls\": 4\n" +
-                        "    }\n" +
-                        "  },\n" +
-                        "\n" +
-                        "  \"ChestDefinitions\": {\n" +
-                        "    \"Common\": [],\n" +
-                        "    \"Uncommon\": [],\n" +
-                        "    \"Rare\": [],\n" +
-                        "    \"SuperRare\": []\n" +
-                        "  },\n" +
-                        "\n" +
-                        "  \"LootDefinitions\": {\n" +
-                        "    \"Common\": [],\n" +
-                        "    \"Uncommon\": [],\n" +
-                        "    \"Rare\": [],\n" +
-                        "    \"SuperRare\": []\n" +
-                        "  }\n" +
-                        "}";
+                String configFileText = """
+                        {
+                          "LootTableIds": {
+                            "minecraft:chests/abandoned_mineshaft": {
+                              "LootPools": ["Rags", "Riches"]
+                            }
+                          },
+                                                
+                          "LootPoolDefinitions": {
+                            "Rags": {
+                              "MinRolls": 0,
+                              "MaxRolls": 2,
+                              "RollSuccessChance": 1.0,
+                              "LootingRollSuccessModifier": 0.2,
+                              "MinBonusRolls": 0,
+                              "MaxBonusRolls": 1,
+                              "Conditions": ["idk"],
+                              "Entries": {
+                                "minecraft:dirt": [1, 1]
+                              }
+                            }
+                          }
+                        }
+                        """;
                 // Create the file writer to write the file
                 FileWriter configFileWritter = new FileWriter(configFile);
                 // Write the text and close the writer
@@ -83,12 +72,10 @@ public class ConfigManager {
                 Reader configReader = Files.newBufferedReader(configFile.toPath());
                 // Create an object from the config file
                 CURRENT_CONFIG = gson.fromJson(configReader, ConfigurationObject.class);
-                if (CURRENT_CONFIG.ChestDefinitions == null) {
-                    ChestLootModifierMod.LOGGER.error("[Chest Loot Modifier Mod] ChestDefinitions does not exist or is malformed in the configuration file: " + configFile.getName() + "");
-                } else if (CURRENT_CONFIG.LootDefinitions == null) {
+                if (CURRENT_CONFIG.getLootPoolDefinitions() == null) {
                     ChestLootModifierMod.LOGGER.error("[Chest Loot Modifier Mod] LootDefinitions does not exist or is malformed in the configuration file: " + configFile.getName() + "");
-                } else if (CURRENT_CONFIG.Names == null) {
-                    ChestLootModifierMod.LOGGER.error("[Chest Loot Modifier Mod] Names does not exist or is malformed in the configuration file: " + configFile.getName() + "");
+                } else if (CURRENT_CONFIG.getLootTableIds() == null) {
+                    ChestLootModifierMod.LOGGER.error("[Chest Loot Modifier Mod] LootTableIds does not exist or is malformed in the configuration file: " + configFile.getName() + "");
                 } else {
                     SUCCESSFULLY_LOADED_CONFIG = true;
                 }

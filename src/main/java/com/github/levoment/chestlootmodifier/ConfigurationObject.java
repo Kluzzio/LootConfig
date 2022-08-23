@@ -1,51 +1,30 @@
 package com.github.levoment.chestlootmodifier;
 
-import java.util.List;
 import java.util.Map;
 
 public class ConfigurationObject {
 
-    public boolean LoadPoolsAtRuntime;
-    public Map<String, RarityObject> Names;
-    public Map<String, List<String>> ChestDefinitions;
-    public Map<String, List<String>> LootDefinitions;
+    public Map<String, LootPoolCollectionObject> LootTableIds;
+    public Map<String, LootPoolObject> LootPoolDefinitions;
 
-    public ConfigurationObject(boolean loadPoolsAtRuntime, Map<String, RarityObject> names, Map<String, List<String>> chestDefinitions, Map<String, List<String>> lootDefinitions) {
-        this.LoadPoolsAtRuntime = loadPoolsAtRuntime;
-        this.Names = names;
-        this.ChestDefinitions = chestDefinitions;
-        this.LootDefinitions = lootDefinitions;
+    public ConfigurationObject(Map<String, LootPoolCollectionObject> lootTableIds, Map<String, LootPoolObject> lootPoolDefinitions) {
+        this.LootTableIds = lootTableIds;
+        this.LootPoolDefinitions = lootPoolDefinitions;
     }
 
-    public boolean loadPoolsAtRuntime() {
-        return LoadPoolsAtRuntime;
+    public Map<String, LootPoolCollectionObject> getLootTableIds() {
+        return LootTableIds;
     }
 
-    public void setLoadPoolsAtRuntime(boolean loadPoolsAtRuntime) {
-        LoadPoolsAtRuntime = loadPoolsAtRuntime;
+    public void setLootTableIds(Map<String, LootPoolCollectionObject> lootTableIds) {
+       this.LootTableIds = lootTableIds;
     }
 
-    public Map<String, RarityObject> getNames() {
-        return Names;
+    public Map<String, LootPoolObject> getLootPoolDefinitions() {
+        return LootPoolDefinitions;
     }
 
-    public void setNames(Map<String, RarityObject> names) {
-       this.Names = names;
-    }
-
-    public Map<String, List<String>> getChestDefinitions() {
-        return ChestDefinitions;
-    }
-
-    public void setChestDefinitions(Map<String, List<String>> chestDefinitions) {
-        ChestDefinitions = chestDefinitions;
-    }
-
-    public Map<String, List<String>> getLootDefinitions() {
-        return LootDefinitions;
-    }
-
-    public void setLootDefinitions(Map<String, List<String>> lootDefinitions) {
-        LootDefinitions = lootDefinitions;
+    public void setLootPoolDefinitions(Map<String, LootPoolObject> lootPoolDefinitions) {
+        LootPoolDefinitions = lootPoolDefinitions;
     }
 }
