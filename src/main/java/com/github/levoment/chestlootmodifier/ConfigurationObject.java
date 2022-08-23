@@ -27,4 +27,8 @@ public class ConfigurationObject {
     public void setLootPoolDefinitions(Map<String, LootPoolObject> lootPoolDefinitions) {
         LootPoolDefinitions = lootPoolDefinitions;
     }
+
+    public boolean loadPoolsAtRuntime() {
+        return false;
+    }
 }

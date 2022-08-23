@@ -49,10 +49,10 @@ public class ConfigManager {
                         }
                         """;
                 // Create the file writer to write the file
-                FileWriter configFileWritter = new FileWriter(configFile);
+                FileWriter configFileWriter = new FileWriter(configFile);
                 // Write the text and close the writer
-                configFileWritter.write(configFileText);
-                configFileWritter.close();
+                configFileWriter.write(configFileText);
+                configFileWriter.close();
                 // Create the file
                 configFile.createNewFile();
             } catch (IOException e) {

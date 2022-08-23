@@ -1,5 +1,6 @@
 package com.github.levoment.chestlootmodifier;
 
+import com.github.levoment.chestlootmodifier.api.LootPoolInterpreter;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.loot.v2.LootTableEvents;
 import net.minecraft.item.Item;
@@ -7,8 +8,10 @@ import net.minecraft.loot.LootPool;
 import net.minecraft.loot.condition.RandomChanceWithLootingLootCondition;
 import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.function.SetCountLootFunction;
+import net.minecraft.loot.function.SetNbtLootFunction;
 import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
 import net.minecraft.loot.provider.number.UniformLootNumberProvider;
+import net.minecraft.potion.PotionUtil;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import org.slf4j.Logger;
@@ -65,13 +68,7 @@ public class ChestLootModifierMod implements ModInitializer {
                                 lootPoolBuilder.bonusRolls(UniformLootNumberProvider.create(minBonusRolls, maxBonusRolls));
                                 // TODO Enact Conditions
                                 Map<String, List<Integer>> entries = currentLootPool.getEntries();
-                                entries.forEach((entry, entryInformation) -> {
-                                    Item entryItem = Registry.ITEM.get(new Identifier(entry));
-                                    lootPoolBuilder.with(ItemEntry.builder(entryItem).weight(entryInformation.get(1))
-                                            .apply(SetCountLootFunction.builder(ConstantLootNumberProvider.create(
-                                                    entryInformation.get(0))
-                                            )));
-                                });
+                                entries.forEach((entry, entryInformation) -> LootPoolInterpreter.addItem(entry, lootPoolBuilder, entryInformation));
                                 tableBuilder.pool(lootPoolBuilder.build());
                             }
                         }

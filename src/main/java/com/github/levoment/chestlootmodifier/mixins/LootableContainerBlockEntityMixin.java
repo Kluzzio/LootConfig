@@ -49,7 +49,7 @@ public class LootableContainerBlockEntityMixin {
             // If the configuration was loaded successfully
             if (ConfigManager.SUCCESSFULLY_LOADED_CONFIG) {
                 // Return if LoadPoolsAtRuntime is false
-                //if (!ConfigManager.CURRENT_CONFIG.loadPoolsAtRuntime()) return;
+                if (!ConfigManager.CURRENT_CONFIG.loadPoolsAtRuntime()) return;
 
                 ConfigManager.CURRENT_CONFIG.getLootTableIds().forEach((key, lootPoolCollection) -> {
 
