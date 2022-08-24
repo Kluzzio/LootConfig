@@ -10,16 +10,18 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class ConfigManager {
 
     public static final String CONFIG_FILE =  "chestlootmodifier_config.json";
+    public static final Path FABRIC_CONFIG_DIR = FabricLoader.getInstance().getConfigDir();
     public static ConfigurationObject CURRENT_CONFIG;
     public static boolean SUCCESSFULLY_LOADED_CONFIG;
 
     public static void createConfigFile() {
         // Create the file in memory
-        File configFile = FabricLoader.getInstance().getConfigDir().resolve(CONFIG_FILE).toFile();
+        File configFile = FABRIC_CONFIG_DIR.resolve(CONFIG_FILE).toFile();
         // If it doesn't exist in disk
         if (!configFile.exists()) {
             try {
@@ -63,7 +65,7 @@ public class ConfigManager {
 
     public static void readConfigFile() {
         // Create the variable to contain the config file in memory
-        File configFile = FabricLoader.getInstance().getConfigDir().resolve(CONFIG_FILE).toFile();
+        File configFile = FABRIC_CONFIG_DIR.resolve(CONFIG_FILE).toFile();
         if (configFile.exists()) {
             // Create the Gson instance
             Gson gson = new Gson();
