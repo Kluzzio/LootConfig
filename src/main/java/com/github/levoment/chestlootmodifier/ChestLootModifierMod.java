@@ -3,6 +3,8 @@ package com.github.levoment.chestlootmodifier;
 import com.github.levoment.chestlootmodifier.api.LootTableEventHelper;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.loot.v2.LootTableEvents;
+import net.minecraft.loot.LootPool;
+import net.minecraft.loot.LootTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,6 +26,12 @@ public class ChestLootModifierMod implements ModInitializer {
 
             LootTableEvents.MODIFY.register((resourceManager, lootManager, id, tableBuilder, source) ->
                     LootTableEventHelper.addLootPools(ConfigManager.CURRENT_CONFIG, id, tableBuilder));
+
+            LootTableEvents.REPLACE.register(((resourceManager, lootManager, id, original, source) -> {
+                LootPool.Builder lootPoolBuilder = LootPool.builder();
+                original = LootTable.builder().pool(lootPoolBuilder.build()).build();
+                return original;
+            }));
         }
     }
 }
