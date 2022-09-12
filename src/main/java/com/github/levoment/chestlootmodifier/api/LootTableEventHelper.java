@@ -1,9 +1,9 @@
 package com.github.levoment.chestlootmodifier.api;
 
-import com.github.levoment.chestlootmodifier.ConfigManager;
-import com.github.levoment.chestlootmodifier.ConfigurationObject;
-import com.github.levoment.chestlootmodifier.LootPoolCollectionObject;
-import com.github.levoment.chestlootmodifier.LootPoolObject;
+import com.github.levoment.chestlootmodifier.config.ConfigManager;
+import com.github.levoment.chestlootmodifier.config.configobjects.ConfigurationObject;
+import com.github.levoment.chestlootmodifier.config.configobjects.LootPoolCollectionObject;
+import com.github.levoment.chestlootmodifier.config.configobjects.LootPoolObject;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.condition.RandomChanceWithLootingLootCondition;
@@ -27,18 +27,44 @@ public class LootTableEventHelper {
                 }
             }
         }
+        for (String key : configurationObject.getNames().keySet()) {
+            if (ConfigManager.SETTINGS_CONFIG.getNameDefinitions().containsKey(key)) {
+                if (ConfigManager.SETTINGS_CONFIG.getNameDefinitions().get(key).contains(id.toString())) {
+                    Map<String, LootPoolObject> lootPoolDefinitions = ConfigManager.SETTINGS_CONFIG.getLootPoolDefinitions();
+                    for (String lootPool : configurationObject.getNames().get(key).getLootPools()) {
+                        if (lootPoolDefinitions.containsKey(lootPool)) {
+                            lootPools.add(makeLootPoolFromConfig(lootPool, lootPoolDefinitions));
+                        }
+                    }
+                }
+            }
+        }
         return lootPools;
     }
 
     public static Collection<LootPool> replaceLootPoolsFromConfig(ConfigurationObject configurationObject, Identifier id, LootTable original) {
         Collection<LootPool> lootPools = new java.util.ArrayList<>(List.of(original.pools));
+        boolean bl = false;
         if (configurationObject.getLootTableIds().containsKey(id.toString())) {
-            lootPools = new java.util.ArrayList<>(List.of());
-            LootPoolCollectionObject lootPoolCollection = configurationObject.getLootTableIds().get(id.toString());
+            lootPools = new java.util.ArrayList<>(List.of()); bl = true;
             Map<String, LootPoolObject> lootPoolDefinitions = ConfigManager.SETTINGS_CONFIG.getLootPoolDefinitions();
-            for (String lootPool : lootPoolCollection.getLootPools()) {
+            for (String lootPool : configurationObject.getLootTableIds().get(id.toString()).getLootPools()) {
                 if (lootPoolDefinitions.containsKey(lootPool)) {
                     lootPools.add(makeLootPoolFromConfig(lootPool, lootPoolDefinitions));
+                }
+            }
+        }
+        for (String key : configurationObject.getNames().keySet()) {
+            if (ConfigManager.SETTINGS_CONFIG.getNameDefinitions().containsKey(key)) {
+                if (ConfigManager.SETTINGS_CONFIG.getNameDefinitions().get(key).contains(id.toString())) {
+                    Map<String, LootPoolObject> lootPoolDefinitions = ConfigManager.SETTINGS_CONFIG.getLootPoolDefinitions();
+                    if (!bl)
+                        lootPools = new java.util.ArrayList<>(List.of());
+                    for (String lootPool : configurationObject.getNames().get(key).getLootPools()) {
+                        if (lootPoolDefinitions.containsKey(lootPool)) {
+                            lootPools.add(makeLootPoolFromConfig(lootPool, lootPoolDefinitions));
+                        }
+                    }
                 }
             }
         }

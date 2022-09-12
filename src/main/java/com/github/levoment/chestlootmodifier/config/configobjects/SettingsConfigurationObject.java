@@ -1,6 +1,4 @@
-package com.github.levoment.chestlootmodifier.config;
-
-import com.github.levoment.chestlootmodifier.LootPoolObject;
+package com.github.levoment.chestlootmodifier.config.configobjects;
 
 import java.util.List;
 import java.util.Map;
@@ -21,23 +19,11 @@ public class SettingsConfigurationObject {
         return LoadPoolsAtRuntime;
     }
 
-    public void setLoadPoolsAtRuntime(boolean loadPoolsAtRuntime) {
-        LoadPoolsAtRuntime = loadPoolsAtRuntime;
-    }
-
     public Map<String, List<String>> getNameDefinitions() {
         return NameDefinitions;
     }
 
-    public void setNameDefinitions(Map<String, List<String>> nameDefinitions) {
-        NameDefinitions = nameDefinitions;
-    }
-
     public Map<String, LootPoolObject> getLootPoolDefinitions() {
         return LootPoolDefinitions;
-    }
-
-    public void setLootPoolDefinitions(Map<String, LootPoolObject> lootDefinitions) {
-        LootPoolDefinitions = lootDefinitions;
     }
 }

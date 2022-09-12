@@ -1,8 +1,8 @@
 package com.github.levoment.chestlootmodifier.mixins;
 
 import com.github.levoment.chestlootmodifier.ChestLootModifierMod;
-import com.github.levoment.chestlootmodifier.ConfigManager;
-import com.github.levoment.chestlootmodifier.LootPoolObject;
+import com.github.levoment.chestlootmodifier.config.ConfigManager;
+import com.github.levoment.chestlootmodifier.config.configobjects.LootPoolObject;
 import net.fabricmc.fabric.api.loot.v2.FabricLootTableBuilder;
 import net.minecraft.block.entity.LootableContainerBlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -48,14 +48,13 @@ public class LootableContainerBlockEntityMixin {
             ConfigManager.readConfigFile(ChestLootModifierMod.MODIFY_CONFIG_FILE);
 
             // If the configuration was loaded successfully
-            if (ConfigManager.SUCCESSFULLY_LOADED_CONFIG) {
+            if (ConfigManager.SUCCESSFULLY_LOADED_SETTINGS) {
                 // Return if LoadPoolsAtRuntime is false
-                if (!ConfigManager.CURRENT_CONFIG.loadPoolsAtRuntime()) return;
-
-                ConfigManager.CURRENT_CONFIG.getLootTableIds().forEach((key, lootPoolCollection) -> {
+                if (!ConfigManager.SETTINGS_CONFIG.getloadPoolsAtRuntime()) return;
+                ConfigManager.MODIFY_CONFIG.getLootTableIds().forEach((key, lootPoolCollection) -> {
 
                     if (key.equals(lootTableId.toString())) {
-                        Map<String, LootPoolObject> lootPoolDefinitions = ConfigManager.CURRENT_CONFIG.getLootPoolDefinitions();
+                        Map<String, LootPoolObject> lootPoolDefinitions = ConfigManager.SETTINGS_CONFIG.getLootPoolDefinitions();
                         for (String lootPool : lootPoolCollection.getLootPools()) {
                             if (lootPoolDefinitions.containsKey(lootPool)) {
                                 LootPoolObject currentLootPool = lootPoolDefinitions.get(lootPool);
@@ -98,7 +97,7 @@ public class LootableContainerBlockEntityMixin {
     @ModifyVariable(method = "checkLootInteraction(Lnet/minecraft/entity/player/PlayerEntity;)V", at = @At(value = "STORE", id = "lootTable"))
     public LootTable modifyLootTable(LootTable lootTable) {
         // If the configuration was loaded successfully
-        if (ConfigManager.SUCCESSFULLY_LOADED_CONFIG) {
+        if (ConfigManager.SUCCESSFULLY_LOADED_SETTINGS) {
             // Return if LoadPoolsAtRuntime is false
             //if (!ConfigManager.CURRENT_CONFIG.loadPoolsAtRuntime()) return lootTable;
         }

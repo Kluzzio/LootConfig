@@ -1,8 +1,9 @@
-package com.github.levoment.chestlootmodifier;
+package com.github.levoment.chestlootmodifier.config.configobjects;
 
 import java.util.List;
 import java.util.Map;
 
+@SuppressWarnings("FieldMayBeFinal")
 public class LootPoolObject {
     private int MinRolls;
     private int MaxRolls;

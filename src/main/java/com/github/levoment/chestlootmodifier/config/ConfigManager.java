@@ -1,6 +1,8 @@
-package com.github.levoment.chestlootmodifier;
+package com.github.levoment.chestlootmodifier.config;
 
-import com.github.levoment.chestlootmodifier.config.SettingsConfigurationObject;
+import com.github.levoment.chestlootmodifier.ChestLootModifierMod;
+import com.github.levoment.chestlootmodifier.config.configobjects.ConfigurationObject;
+import com.github.levoment.chestlootmodifier.config.configobjects.SettingsConfigurationObject;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSyntaxException;
@@ -12,16 +14,16 @@ import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Objects;
 
 public class ConfigManager {
 
     public static final Path FABRIC_CONFIG_DIR = FabricLoader.getInstance().getConfigDir();
-    public static ConfigurationObject CURRENT_CONFIG;
-    public static boolean SUCCESSFULLY_LOADED_CONFIG;
     public static SettingsConfigurationObject SETTINGS_CONFIG;
     public static boolean SUCCESSFULLY_LOADED_SETTINGS;
-
+    public static ConfigurationObject MODIFY_CONFIG;
+    public static ConfigurationObject REPLACE_CONFIG;
+    public static boolean SUCCESSFULLY_LOADED_MODIFY;
+    public static boolean SUCCESSFULLY_LOADED_REPLACE;
 
     public static void interpretConfigFile(String configInQuestion) {
         //Make config if it doesn't exist
@@ -35,15 +37,17 @@ public class ConfigManager {
         File configFile = FABRIC_CONFIG_DIR.resolve(configToCreate).toFile();
         // If it doesn't exist in disk
         if (!configFile.exists()) {
+            //noinspection ResultOfMethodCallIgnored
             configFile.getParentFile().mkdirs();
             try {
                 String configFileText = getConfigFileText(configToCreate);
-                // Create the file writer to write the file
+
                 FileWriter configFileWriter = new FileWriter(configFile);
-                // Write the text and close the writer
+
                 configFileWriter.write(configFileText);
                 configFileWriter.close();
-                // Create the file
+
+                //noinspection ResultOfMethodCallIgnored
                 configFile.createNewFile();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -56,14 +60,13 @@ public class ConfigManager {
         File configFile = FABRIC_CONFIG_DIR.resolve(configToRead).toFile();
         if (configFile.exists()) {
             // Create the Gson instance
-            Gson gson = new Gson();
             try {
                 // Create a reader for the configuration file
                 Reader configReader = Files.newBufferedReader(configFile.toPath());
                 // Create an object from the config file
                 if (configToRead.equals(ChestLootModifierMod.SETTINGS_CONFIG_FILE)) {
-                    testSuccessfulSettingsConfig(gson, configReader, configFile);
-                } else testSuccessfulConfig(gson, configReader, configFile);
+                    testSuccessfulSettingsConfig(configReader, configFile);
+                } else testSuccessfulConfig(configReader, configFile, configToRead);
             } catch (IOException e) {
                 ChestLootModifierMod.LOGGER.error("[Chest Loot Modifier Mod] IO error when reading configuration file:");
                 e.printStackTrace();
@@ -103,20 +106,29 @@ public class ConfigManager {
                 """;
     }
 
-    public static void testSuccessfulConfig(Gson gson, Reader configReader, File configFile) {
-        SUCCESSFULLY_LOADED_CONFIG = false; //initialize to false for re-usability
-        CURRENT_CONFIG = gson.fromJson(configReader, ConfigurationObject.class);
-        if (CURRENT_CONFIG.getLootTableIds() == null) {
-            ChestLootModifierMod.LOGGER.error("[Chest Loot Modifier Mod] LootTableIds does not exist or is malformed in the configuration file: " + configFile.getName());
-        } else if (CURRENT_CONFIG.getNames() == null) {
-            ChestLootModifierMod.LOGGER.error(ChestLootModifierMod.MOD_NAME_LOG_ID + " Names does not exist or is malformed in the configuration file: " + configFile.getName());
-        } else {
-            SUCCESSFULLY_LOADED_CONFIG = true;
+    public static void testSuccessfulConfig(Reader configReader, File configFile, String configToRead) {
+        if (configToRead.equals(ChestLootModifierMod.MODIFY_CONFIG_FILE)) {
+            MODIFY_CONFIG = new Gson().fromJson(configReader, ConfigurationObject.class);
+            SUCCESSFULLY_LOADED_MODIFY = testSuccessfulLoad(MODIFY_CONFIG, configFile);
+        } else if (configToRead.equals(ChestLootModifierMod.REPLACE_CONFIG_FILE)) {
+            REPLACE_CONFIG = new Gson().fromJson(configReader, ConfigurationObject.class);
+            SUCCESSFULLY_LOADED_REPLACE = testSuccessfulLoad(REPLACE_CONFIG, configFile);
         }
     }
 
-    public static void testSuccessfulSettingsConfig(Gson gson, Reader configReader, File configFile) {
-        SETTINGS_CONFIG = gson.fromJson(configReader, SettingsConfigurationObject.class);
+    private static boolean testSuccessfulLoad(ConfigurationObject configurationObject, File configFile) {
+        if (configurationObject.getLootTableIds() == null) {
+            ChestLootModifierMod.LOGGER.error(ChestLootModifierMod.MOD_NAME_LOG_ID + " LootTableIds does not exist or is malformed in the configuration file: " + configFile.getName());
+            return false;
+        } else if (configurationObject.getNames() == null) {
+            ChestLootModifierMod.LOGGER.error(ChestLootModifierMod.MOD_NAME_LOG_ID + " Names does not exist or is malformed in the configuration file: " + configFile.getName());
+            return false;
+        }
+        return true;
+    }
+
+    public static void testSuccessfulSettingsConfig(Reader configReader, File configFile) {
+        SETTINGS_CONFIG = new Gson().fromJson(configReader, SettingsConfigurationObject.class);
         if (SETTINGS_CONFIG.getNameDefinitions() == null) {
             ChestLootModifierMod.LOGGER.error(ChestLootModifierMod.MOD_NAME_LOG_ID + " NameDefinitions does not exist or is malformed in the configuration file: " + configFile.getName());
         } else if (SETTINGS_CONFIG.getLootPoolDefinitions() == null) {
