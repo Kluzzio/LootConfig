@@ -5,6 +5,7 @@ import java.util.Map;
 public class ConfigurationObject {
 
     public Map<String, LootPoolCollectionObject> LootTableIds;
+    public Map<String, LootPoolCollectionObject> Names;
     public Map<String, LootPoolObject> LootPoolDefinitions;
 
     public ConfigurationObject(Map<String, LootPoolCollectionObject> lootTableIds, Map<String, LootPoolObject> lootPoolDefinitions) {
@@ -18,6 +19,14 @@ public class ConfigurationObject {
 
     public void setLootTableIds(Map<String, LootPoolCollectionObject> lootTableIds) {
        this.LootTableIds = lootTableIds;
+    }
+
+    public Map<String, LootPoolCollectionObject> getNames() {
+        return Names;
+    }
+
+    public void setNames(Map<String, LootPoolCollectionObject> names) {
+        this.Names = names;
     }
 
     public Map<String, LootPoolObject> getLootPoolDefinitions() {

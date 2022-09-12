@@ -1,5 +1,6 @@
 package com.github.levoment.chestlootmodifier.mixins;
 
+import com.github.levoment.chestlootmodifier.ChestLootModifierMod;
 import com.github.levoment.chestlootmodifier.ConfigManager;
 import com.github.levoment.chestlootmodifier.LootPoolObject;
 import net.fabricmc.fabric.api.loot.v2.FabricLootTableBuilder;
@@ -42,9 +43,9 @@ public class LootableContainerBlockEntityMixin {
         if (this.lootTableId != null && ((LootableContainerBlockEntity) ((Object) this)).getWorld().getServer() != null) {
             MinecraftServer minecraftServer = ((LootableContainerBlockEntity) ((Object) this)).getWorld().getServer();
             // Create the config file if it doesn't exist
-            ConfigManager.createConfigFile();
+            ConfigManager.createConfigFile(ChestLootModifierMod.MODIFY_CONFIG_FILE);
             // Read the config file
-            ConfigManager.readConfigFile();
+            ConfigManager.readConfigFile(ChestLootModifierMod.MODIFY_CONFIG_FILE);
 
             // If the configuration was loaded successfully
             if (ConfigManager.SUCCESSFULLY_LOADED_CONFIG) {

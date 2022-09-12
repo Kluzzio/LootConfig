@@ -2,6 +2,7 @@ package com.github.levoment.chestlootmodifier.api;
 
 import com.github.levoment.chestlootmodifier.ConfigManager;
 import com.github.levoment.chestlootmodifier.ConfigurationObject;
+import com.github.levoment.chestlootmodifier.LootPoolCollectionObject;
 import com.github.levoment.chestlootmodifier.LootPoolObject;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
@@ -9,30 +10,50 @@ import net.minecraft.loot.condition.RandomChanceWithLootingLootCondition;
 import net.minecraft.loot.provider.number.UniformLootNumberProvider;
 import net.minecraft.util.Identifier;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 public class LootTableEventHelper {
 
-    public static void addLootPools(ConfigurationObject configurationObject, Identifier id, LootTable.Builder tableBuilder) {
-        configurationObject.getLootTableIds().forEach((key, lootPoolCollection) -> {
-
-            if (key.equals(id.toString())) {
-                Map<String, LootPoolObject> lootPoolDefinitions = ConfigManager.CURRENT_CONFIG.getLootPoolDefinitions();
-                for (String lootPool : lootPoolCollection.getLootPools()) {
-                    if (lootPoolDefinitions.containsKey(lootPool)) {
-                        LootPoolObject currentLootPool = lootPoolDefinitions.get(lootPool);
-                        LootPool.Builder lootPoolBuilder = LootPool.builder();
-                        setRolls(lootPoolBuilder, currentLootPool);
-                        setRollChance(lootPoolBuilder, currentLootPool);
-                        setBonusRolls(lootPoolBuilder, currentLootPool);
-                        // TODO setConditions(lootPoolBuilder, currentLootPool);
-                        setEntries(lootPoolBuilder, currentLootPool);
-                        tableBuilder.pool(lootPoolBuilder.build());
-                    }
+    public static Collection<LootPool> modifyLootPoolsFromConfig(ConfigurationObject configurationObject, Identifier id) {
+        Collection<LootPool> lootPools = new java.util.ArrayList<>(List.of());
+        if (configurationObject.getLootTableIds().containsKey(id.toString())) {
+            LootPoolCollectionObject lootPoolCollection = configurationObject.getLootTableIds().get(id.toString());
+            Map<String, LootPoolObject> lootPoolDefinitions = ConfigManager.SETTINGS_CONFIG.getLootPoolDefinitions();
+            for (String lootPool : lootPoolCollection.getLootPools()) {
+                if (lootPoolDefinitions.containsKey(lootPool)) {
+                    lootPools.add(makeLootPoolFromConfig(lootPool, lootPoolDefinitions));
                 }
             }
-        });
+        }
+        return lootPools;
+    }
+
+    public static Collection<LootPool> replaceLootPoolsFromConfig(ConfigurationObject configurationObject, Identifier id, LootTable original) {
+        Collection<LootPool> lootPools = new java.util.ArrayList<>(List.of(original.pools));
+        if (configurationObject.getLootTableIds().containsKey(id.toString())) {
+            lootPools = new java.util.ArrayList<>(List.of());
+            LootPoolCollectionObject lootPoolCollection = configurationObject.getLootTableIds().get(id.toString());
+            Map<String, LootPoolObject> lootPoolDefinitions = ConfigManager.SETTINGS_CONFIG.getLootPoolDefinitions();
+            for (String lootPool : lootPoolCollection.getLootPools()) {
+                if (lootPoolDefinitions.containsKey(lootPool)) {
+                    lootPools.add(makeLootPoolFromConfig(lootPool, lootPoolDefinitions));
+                }
+            }
+        }
+        return lootPools;
+    }
+
+    private static LootPool makeLootPoolFromConfig(String lootPool, Map<String, LootPoolObject> lootPoolDefinitions) {
+        LootPoolObject currentLootPool = lootPoolDefinitions.get(lootPool);
+        LootPool.Builder lootPoolBuilder = LootPool.builder();
+        setRolls(lootPoolBuilder, currentLootPool);
+        setRollChance(lootPoolBuilder, currentLootPool);
+        setBonusRolls(lootPoolBuilder, currentLootPool);
+        // TODO setConditions(lootPoolBuilder, currentLootPool);
+        setEntries(lootPoolBuilder, currentLootPool);
+        return lootPoolBuilder.build();
     }
 
     private static void setRolls(LootPool.Builder lootPoolBuilder, LootPoolObject currentLootPool) {
