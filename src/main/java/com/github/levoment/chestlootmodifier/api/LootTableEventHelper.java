@@ -106,6 +106,7 @@ public class LootTableEventHelper {
 
     private static void setConditions(LootPool.Builder lootPoolBuilder, LootPoolObject currentLootPool) {
         // TODO Enact Conditions
+        currentLootPool.getConditions();
     }
 
     private static void setEntries(LootPool.Builder lootPoolBuilder, LootPoolObject currentLootPool) {
