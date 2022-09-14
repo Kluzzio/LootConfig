@@ -60,6 +60,8 @@ public class LootTableEventHelper {
             for (String lootPool : configurationObject.getLootTableIds().get(id.toString()).getLootPools()) {
                 if (lootPoolDefinitions.containsKey(lootPool)) {
                     lootPools.add(makeLootPoolFromConfig(lootPool, lootPoolDefinitions));
+                } else if (lootPool.equals("Vanilla") && VanillaLootPoolHelper.VANILLA_LOOT_TABLES.containsKey(id.toString())) {
+                    lootPools.addAll(List.of(VanillaLootPoolHelper.VANILLA_LOOT_TABLES.get(id.toString()).pools));
                 }
             }
         }
@@ -72,6 +74,8 @@ public class LootTableEventHelper {
                     for (String lootPool : configurationObject.getNames().get(key).getLootPools()) {
                         if (lootPoolDefinitions.containsKey(lootPool)) {
                             lootPools.add(makeLootPoolFromConfig(lootPool, lootPoolDefinitions));
+                        } else if (lootPool.equals("Vanilla") && VanillaLootPoolHelper.VANILLA_LOOT_TABLES.containsKey(id.toString())) {
+                            lootPools.addAll(List.of(VanillaLootPoolHelper.VANILLA_LOOT_TABLES.get(id.toString()).pools));
                         }
                     }
                 }
