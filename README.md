@@ -58,6 +58,10 @@ enchantment of a designate-able level.
 `WeatherCheck` allows you to set `RainingTrue` or `RainingFalse` or `ThunderingTrue` or 
 `ThunderingFalse` or `RainingOrThundering` and whichever you set will be a requirement.
 
+`"Vanilla"` can be used as a loot pool without needing to define it in the
+settings config to denote wanting to generate the normal loot table of a table id.
+Other loot pools can still be added to this loot pool collection.
+
 ## Issues
 The mod has a lot of logic to print to the console when something fails. If the game crashes 
 or if the loot doesn't seem to have been applied to the table ID, create an issue. You can also 
