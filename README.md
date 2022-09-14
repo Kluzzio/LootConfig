@@ -83,3 +83,7 @@ I just wanted something like this to exist. Again, just provide a link back to m
 ## License
 
 MIT
+
+### Other
+
+Icon drawn by Dream Studio AI art with prompt: Pixel art Treasure chest
