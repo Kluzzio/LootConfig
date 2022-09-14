@@ -1,96 +1,85 @@
-# Chest Loot Modifier
+# Loot Config
 
-![Chest Loot Modifier Icon](./src/main/resources/assets/chestlootmodifier/icon.png)
+![Chest Loot Modifier Icon](./src/main/resources/assets/lootconfig/icon.png)
 
 ## About
 
-Minecraft mod for modifying the items that appear in chests in Minecraft
+Minecraft mod for modifying the loot tables throughout Minecraft
 
-Everytime a chest is generated in the world, it is not until the chest is opened for the 
-first time that loot for it is generated. Therefore, this mod does not require the game to be 
-restarted for the changes in the config file to take effect. However, once a chest 
-is opened for the first time, the loot generated for said chest will not change unless there is a mod 
-that regenerates the loot for the chest.
+As with the original inspiration of this mod it is the case that everytime a chest is generated in the world, 
+it is not until the chest is opened for the first time that loot for it is generated. Therefore, this mod 
+does not require the game to be restarted for the changes in the config file to take effect. However, 
+once a chest is opened for the first time, the loot generated for said chest will not change unless 
+there is a mod that regenerates the loot for the chest.
+
+This mod provides direct support beyond what was provided by Chest Loot Modifier by Levonment including 
+allowing modification to entities' and blocks' loot tables as well!
+
+This mod is designed with the idea of overwriting other mods in mind if desired. Please read the full README.md
+
+Please check out Levonment's mod here: https://github.com/Levoment/ChestLootModifier and give 
+all the love and support you can <3
+
+If you need any assistance in understanding the mod, you can join the Timefall discord here: https://discord.gg/EHrWY5ZTYQ
+
+I will be happy to assist and hope this mod is useful to you!
 
 ## Configuration
 
-A file named `chestlootmodifier_config.json` needs to exist on the `config` folder of the 
+A file named `settings_and_definitions_config.json` needs to exist on the `config` folder of the 
 Minecraft instance that the mod is loaded on. The mod will automatically create a template 
 for this file during initialization if the file doesn't exist. That means that if the file 
 gets corrupted, you can always delete it and the mod will re-create a template for it.
 
-A sample file looks like this:
-
-```json
-{
-  "LoadPoolsAtRuntime": false,
-  "Names": {
-    "Common": {
-      "MinRolls": 1,
-      "MaxRolls": 2
-    },
-    "Uncommon": {
-      "MinRolls": 1,
-      "MaxRolls": 2
-    },
-    "Rare": {
-      "MinRolls": 1,
-      "MaxRolls": 3
-    },
-    "SuperRare": {
-      "MinRolls": 2,
-      "MaxRolls": 4
-    }
-  },
-
-  "ChestDefinitions": {
-    "Common": ["minecraft:chests/spawn_bonus_chest", "minecraft:chests/village/village_mason", "minecraft:chests/simple_dungeon"],
-    "Uncommon": ["minecraft:chests/desert_pyramid", "minecraft:chests/pillager_outpost", "minecraft:chests/ruined_portal"],
-    "Rare": ["minecraft:chests/bastion_treasure", "minecraft:chests/stronghold_library"],
-    "SuperRare": ["minecraft:chests/woodland_mansion", "minecraft:chests/end_city_treasure"]
-  },
-
-  "LootDefinitions": {
-    "Common": ["minecraft:golden_sword(1)(1)", "minecraft:golden_pickaxe(1)(1)", "minecraft:diamond(16)(3)"],
-    "Uncommon": ["minecraft:diamond(8)(4)", "minecraft:diamond_sword(1)(1)"],
-    "Rare": ["minecraft:netherite_axe(1)(3)", "minecraft:netherite_ingot(8)(1)"],
-    "SuperRare": ["minecraft:elytra(1)(2)", "minecraft:shulker_box(2)(5)"]
-  }
-}
-```
+Sample files can be found in the loot_config/example_config folder!
 
 `LoadPoolsAtRuntime` - decides whether the pools are loaded when Loot Table Loading happens for 
-the world or whether to load them when a chest is opened for the first time. Default 
+the world or whether to load them when a loot table needs to be accessed. Default 
 value is `false` which means the pools are loaded when the world is loaded. 
 Being `false` might make the mod compatible with other mods. Making it 
-`true` might make the mod incompatible with other mods.
+`true` might make the mod incompatible with other mods. `true` is necessary if it is
+desired to override loot table changes other mods have made.
 
-`Names` are the names used to identify the kind of loot. This can be anything, but whatever 
-they are, they must be the same on `ChestDefinitions` and `LootDefinitions`.
-- `MinRolls` and `MaxRolls` are the number of rolls to do for that rarity pool. Choosing 
-a minimum of `0` will give it a chance that none of the items in that pool will appear. 
-These numbers are integers. Because it is a range between min and max, the rolls for the 
-pool will be a random number between the range.
+`NameDefinitions` - Put `"AnyNameYouWant": ["lootTableID"]` to assign lootTableID's to a name
+that will be used in the other two configs.
 
-`ChestDefinitions` these are the chests that will apply to a loot. For instance, which 
-chests will get Common, Uncommon, Rare, and SuperRare loot. These must be the fully 
-qualified Minecraft Identifiers for the chests.
+`LootPoolDefintions` - Put `"AnyNameHere": {//stuff}` to define a lootPool to use. The rolls
+determine how many times the loot pool will attempt to generate an entry. You can use `RollSuccessChance`
+to show how frequent a roll succeeds. Looting applies to entities, Bonus rolls apply to chests.
+Conditions have their own explanation below. Entries allow you to put any item's id followed by
+`[quantity, weight]` using integers.
 
-`LootDefinition` these are which items will apply to each type of loot. For instance, 
-which items will apply to Common loot, Uncommon loot, etc. 
-
-- **The number in the first 
-parenthesis** is the number that will indicate the number of items to appear if the item 
-is selected to appear on the chest that the rarity applies to. 
-
-- **The number in the second parenthesis** is the weight for the item. The higher the 
-weight, the higher the chances that such item will appear should the pool be selected for 
-the chest.
+`Conditions` - limit rolls to succeed only if the conditions are met.
+`KilledByPlayer` does what it sounds like.
+`LocationCheck_Biome` enables a check to ensure the drop can only be made in the specified biome.
+`MatchTool_Enchantment` enables a check to see if the tool you are using has a specific 
+enchantment of a designate-able level.
+`SurvivesExplosion` does what it sounds like.
+`WeatherCheck` allows you to set `RainingTrue` or `RainingFalse` or `ThunderingTrue` or 
+`ThunderingFalse` or `RainingOrThundering` and whichever you set will be a requirement.
 
 ## Issues
 The mod has a lot of logic to print to the console when something fails. If the game crashes 
-or if the loot doesn't seem to have been applied to the chests, create an issue.
+or if the loot doesn't seem to have been applied to the table ID, create an issue. You can also 
+join the Timefall discord here: https://discord.gg/EHrWY5ZTYQ where I can provide direct support.
+
+## The Future of Development
+
+There are likely to be some initial bugs as the conditions are a bit complicated. Please report them,
+give any feature requests, and report any grievances about ease of use in the aforementioned discord.
+I'm looking to make this as easy to use as possible. Function application such as the set nbt loot function
+will be implemented in a future update. Thank you for your support!
+
+## Backporting or Forge? Rehosting?
+
+No. Simply, I will never be porting this mod to forge, I have no interest in doing so. If anyone wishes to,
+I have no objection. Please just provide a link back to this mod and levonment's mod is all I ask.
+I will not be backporting except maybe to 1.18.x because before then, the fabric api lacks a good
+way to modify loot tables. **PLEASE DO NOT REHOST THIS MOD**. It is rude, if you need it on somewhere other than
+CurseForge, **TALK TO ME**. I will likely put it on Modrinth at some point. Please respect this. I will happily accept
+any contributions anyone makes. Feel free to copy a large portion of this mod if you think you can do better!
+I just wanted something like this to exist. Again, just provide a link back to me and levonment please. <3
 
 ## License
 
-The Unlicense
+MIT

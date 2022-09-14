@@ -2,6 +2,7 @@ package com.github.kluzzio.lootconfig;
 
 import com.github.kluzzio.lootconfig.api.LootTableEventHelper;
 import com.github.kluzzio.lootconfig.config.ConfigManager;
+import com.github.kluzzio.lootconfig.config.InitExampleConfig;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.loot.v2.LootTableEvents;
 import net.minecraft.loot.LootTable;
@@ -19,6 +20,7 @@ public class LootConfig implements ModInitializer {
 
     @Override
     public void onInitialize() {
+        InitExampleConfig.init();
         ConfigManager.interpretConfigFile(SETTINGS_CONFIG_FILE);
         if (ConfigManager.SUCCESSFULLY_LOADED_SETTINGS) {
             if (ConfigManager.SETTINGS_CONFIG.getloadPoolsAtRuntime())

@@ -133,8 +133,12 @@ public class LootTableEventHelper {
                 });
                 lootPoolBuilder.conditionally(MatchToolLootCondition.builder(ItemPredicate.Builder.create()
                         .enchantment(new EnchantmentPredicate(enchantment,
+                                matchToolCondition.get(conInfo).size() == 2 ?
                                 NumberRange.IntRange.between(matchToolCondition.get(conInfo).get(0),
-                                        matchToolCondition.get(conInfo).get(1))))));
+                                        matchToolCondition.get(conInfo).get(1))
+                                : (matchToolCondition.get(conInfo).size() == 1 ?
+                                        NumberRange.IntRange.atLeast(matchToolCondition.get(conInfo).get(0))
+                                        : NumberRange.IntRange.atLeast(1))))));
             }
         }
         if (conditions.containsKey("SurvivesExplosion"))
