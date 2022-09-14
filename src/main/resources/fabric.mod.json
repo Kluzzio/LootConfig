@@ -9,8 +9,9 @@
     "Kluzzio"
   ],
   "contact": {
-    "homepage": "",
-    "sources": ""
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/loot-config",
+    "sources": "https://www.curseforge.com/minecraft/mc-mods/loot-config",
+    "issues": "https://github.com/Kluzzio/LootConfig/issues"
   },
 
   "license": "MIT",
