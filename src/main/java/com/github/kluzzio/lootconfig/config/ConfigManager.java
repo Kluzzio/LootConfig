@@ -1,8 +1,8 @@
-package com.github.levoment.chestlootmodifier.config;
+package com.github.kluzzio.lootconfig.config;
 
-import com.github.levoment.chestlootmodifier.ChestLootModifierMod;
-import com.github.levoment.chestlootmodifier.config.configobjects.ConfigurationObject;
-import com.github.levoment.chestlootmodifier.config.configobjects.SettingsConfigurationObject;
+import com.github.kluzzio.lootconfig.LootConfig;
+import com.github.kluzzio.lootconfig.config.configobjects.ConfigurationObject;
+import com.github.kluzzio.lootconfig.config.configobjects.SettingsConfigurationObject;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSyntaxException;
@@ -64,27 +64,27 @@ public class ConfigManager {
                 // Create a reader for the configuration file
                 Reader configReader = Files.newBufferedReader(configFile.toPath());
                 // Create an object from the config file
-                if (configToRead.equals(ChestLootModifierMod.SETTINGS_CONFIG_FILE)) {
+                if (configToRead.equals(LootConfig.SETTINGS_CONFIG_FILE)) {
                     testSuccessfulSettingsConfig(configReader, configFile);
                 } else testSuccessfulConfig(configReader, configFile, configToRead);
             } catch (IOException e) {
-                ChestLootModifierMod.LOGGER.error("[Chest Loot Modifier Mod] IO error when reading configuration file:");
+                LootConfig.LOGGER.error(LootConfig.MOD_NAME_LOG_ID + " IO error when reading configuration file:");
                 e.printStackTrace();
                 System.exit(-1);
             } catch (JsonSyntaxException jsonSyntaxException) {
-                ChestLootModifierMod.LOGGER.error("[Chest Loot Modifier Mod] JSON syntax error when reading configuration file (" + configFile.getName() + "):");
+                LootConfig.LOGGER.error(LootConfig.MOD_NAME_LOG_ID + " JSON syntax error when reading configuration file (" + configFile.getName() + "):");
                 jsonSyntaxException.printStackTrace();
                 System.exit(-1);
             } catch (JsonParseException jsonParseException) {
-                ChestLootModifierMod.LOGGER.error("[Chest Loot Modifier Mod] JSON parse error when reading configuration file (" + configFile.getName() + "):");
+                LootConfig.LOGGER.error(LootConfig.MOD_NAME_LOG_ID + " JSON parse error when reading configuration file (" + configFile.getName() + "):");
                 jsonParseException.printStackTrace();
                 System.exit(-1);
             }
-        } else ChestLootModifierMod.LOGGER.error("No configuration file found for Chest Loot Modifier Mod in: " + configFile.getPath());
+        } else LootConfig.LOGGER.error("No configuration file found for Loot Config Mod in: " + configFile.getPath());
     }
 
     public static String getConfigFileText(String configToCreate) {
-        return configToCreate.equals(ChestLootModifierMod.SETTINGS_CONFIG_FILE) ?
+        return configToCreate.equals(LootConfig.SETTINGS_CONFIG_FILE) ?
                 //Settings Default
                 """
                 {
@@ -107,10 +107,10 @@ public class ConfigManager {
     }
 
     public static void testSuccessfulConfig(Reader configReader, File configFile, String configToRead) {
-        if (configToRead.equals(ChestLootModifierMod.MODIFY_CONFIG_FILE)) {
+        if (configToRead.equals(LootConfig.MODIFY_CONFIG_FILE)) {
             MODIFY_CONFIG = new Gson().fromJson(configReader, ConfigurationObject.class);
             SUCCESSFULLY_LOADED_MODIFY = testSuccessfulLoad(MODIFY_CONFIG, configFile);
-        } else if (configToRead.equals(ChestLootModifierMod.REPLACE_CONFIG_FILE)) {
+        } else if (configToRead.equals(LootConfig.REPLACE_CONFIG_FILE)) {
             REPLACE_CONFIG = new Gson().fromJson(configReader, ConfigurationObject.class);
             SUCCESSFULLY_LOADED_REPLACE = testSuccessfulLoad(REPLACE_CONFIG, configFile);
         }
@@ -118,10 +118,10 @@ public class ConfigManager {
 
     private static boolean testSuccessfulLoad(ConfigurationObject configurationObject, File configFile) {
         if (configurationObject.getLootTableIds() == null) {
-            ChestLootModifierMod.LOGGER.error(ChestLootModifierMod.MOD_NAME_LOG_ID + " LootTableIds does not exist or is malformed in the configuration file: " + configFile.getName());
+            LootConfig.LOGGER.error(LootConfig.MOD_NAME_LOG_ID + " LootTableIds does not exist or is malformed in the configuration file: " + configFile.getName());
             return false;
         } else if (configurationObject.getNames() == null) {
-            ChestLootModifierMod.LOGGER.error(ChestLootModifierMod.MOD_NAME_LOG_ID + " Names does not exist or is malformed in the configuration file: " + configFile.getName());
+            LootConfig.LOGGER.error(LootConfig.MOD_NAME_LOG_ID + " Names does not exist or is malformed in the configuration file: " + configFile.getName());
             return false;
         }
         return true;
@@ -130,9 +130,9 @@ public class ConfigManager {
     public static void testSuccessfulSettingsConfig(Reader configReader, File configFile) {
         SETTINGS_CONFIG = new Gson().fromJson(configReader, SettingsConfigurationObject.class);
         if (SETTINGS_CONFIG.getNameDefinitions() == null) {
-            ChestLootModifierMod.LOGGER.error(ChestLootModifierMod.MOD_NAME_LOG_ID + " NameDefinitions does not exist or is malformed in the configuration file: " + configFile.getName());
+            LootConfig.LOGGER.error(LootConfig.MOD_NAME_LOG_ID + " NameDefinitions does not exist or is malformed in the configuration file: " + configFile.getName());
         } else if (SETTINGS_CONFIG.getLootPoolDefinitions() == null) {
-            ChestLootModifierMod.LOGGER.error(ChestLootModifierMod.MOD_NAME_LOG_ID + " LootPoolDefinitions does not exist or is malformed in the configuration file: " + configFile.getName());
+            LootConfig.LOGGER.error(LootConfig.MOD_NAME_LOG_ID + " LootPoolDefinitions does not exist or is malformed in the configuration file: " + configFile.getName());
         } else {
             SUCCESSFULLY_LOADED_SETTINGS = true;
         }

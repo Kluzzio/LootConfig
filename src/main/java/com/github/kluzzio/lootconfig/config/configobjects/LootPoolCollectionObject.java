@@ -1,4 +1,4 @@
-package com.github.levoment.chestlootmodifier.config.configobjects;
+package com.github.kluzzio.lootconfig.config.configobjects;
 
 import java.util.List;
 

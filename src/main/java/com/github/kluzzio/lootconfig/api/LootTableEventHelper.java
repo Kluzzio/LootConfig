@@ -1,14 +1,23 @@
-package com.github.levoment.chestlootmodifier.api;
+package com.github.kluzzio.lootconfig.api;
 
-import com.github.levoment.chestlootmodifier.config.ConfigManager;
-import com.github.levoment.chestlootmodifier.config.configobjects.ConfigurationObject;
-import com.github.levoment.chestlootmodifier.config.configobjects.LootPoolCollectionObject;
-import com.github.levoment.chestlootmodifier.config.configobjects.LootPoolObject;
+import com.github.kluzzio.lootconfig.LootConfig;
+import com.github.kluzzio.lootconfig.config.ConfigManager;
+import com.github.kluzzio.lootconfig.config.configobjects.ConfigurationObject;
+import com.github.kluzzio.lootconfig.config.configobjects.LootPoolCollectionObject;
+import com.github.kluzzio.lootconfig.config.configobjects.LootPoolObject;
+import com.google.gson.JsonSyntaxException;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
-import net.minecraft.loot.condition.RandomChanceWithLootingLootCondition;
+import net.minecraft.loot.condition.*;
 import net.minecraft.loot.provider.number.UniformLootNumberProvider;
+import net.minecraft.predicate.NumberRange;
+import net.minecraft.predicate.entity.LocationPredicate;
+import net.minecraft.predicate.item.EnchantmentPredicate;
+import net.minecraft.predicate.item.ItemPredicate;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
 
 import java.util.Collection;
 import java.util.List;
@@ -77,7 +86,7 @@ public class LootTableEventHelper {
         setRolls(lootPoolBuilder, currentLootPool);
         setRollChance(lootPoolBuilder, currentLootPool);
         setBonusRolls(lootPoolBuilder, currentLootPool);
-        // TODO setConditions(lootPoolBuilder, currentLootPool);
+        setConditions(lootPoolBuilder, currentLootPool);
         setEntries(lootPoolBuilder, currentLootPool);
         return lootPoolBuilder.build();
     }
@@ -105,8 +114,44 @@ public class LootTableEventHelper {
     }
 
     private static void setConditions(LootPool.Builder lootPoolBuilder, LootPoolObject currentLootPool) {
-        // TODO Enact Conditions
-        currentLootPool.getConditions();
+        Map<String, Map<String, List<Integer>>> conditions = currentLootPool.getConditions();
+
+        if (conditions.containsKey("KilledByPlayer"))
+            lootPoolBuilder.conditionally(KilledByPlayerLootCondition.builder());
+        if (conditions.containsKey("LocationCheck_Biome")) {
+            Map<String, List<Integer>> conditionSet = conditions.get("LocationCheck_Biome");
+            for (String conInfo : conditionSet.keySet()) {
+                lootPoolBuilder.conditionally(LocationCheckLootCondition.builder(LocationPredicate.Builder.create()
+                        .biome(RegistryKey.of(Registry.BIOME_KEY, new Identifier(conInfo)))));
+            }
+        }
+        if (conditions.containsKey("MatchTool_Enchantment")) {
+            Map<String, List<Integer>> matchToolCondition = conditions.get("MatchTool_Enchantment");
+            for (String conInfo : matchToolCondition.keySet()) {
+                Enchantment enchantment = Registry.ENCHANTMENT.getOrEmpty(new Identifier(conInfo)).orElseThrow(() -> {
+                    throw new JsonSyntaxException(LootConfig.MOD_NAME_LOG_ID + " Unknown enchantment '" + new Identifier(conInfo) + "'");
+                });
+                lootPoolBuilder.conditionally(MatchToolLootCondition.builder(ItemPredicate.Builder.create()
+                        .enchantment(new EnchantmentPredicate(enchantment,
+                                NumberRange.IntRange.between(matchToolCondition.get(conInfo).get(0),
+                                        matchToolCondition.get(conInfo).get(1))))));
+            }
+        }
+        if (conditions.containsKey("SurvivesExplosion"))
+            lootPoolBuilder.conditionally(SurvivesExplosionLootCondition.builder());
+        if (conditions.containsKey("WeatherCheck")) {
+            Map<String, List<Integer>> weatherCondition = conditions.get("WeatherCheck");
+            if (weatherCondition.containsKey("RainingTrue"))
+                lootPoolBuilder.conditionally(WeatherCheckLootCondition.create().raining(true));
+            else if (weatherCondition.containsKey("RainingFalse"))
+                lootPoolBuilder.conditionally(WeatherCheckLootCondition.create().raining(false));
+            if (weatherCondition.containsKey("ThunderingTrue"))
+                lootPoolBuilder.conditionally(WeatherCheckLootCondition.create().thundering(true));
+            else if (weatherCondition.containsKey("ThunderingFalse"))
+                lootPoolBuilder.conditionally(WeatherCheckLootCondition.create().thundering(false));
+            if (weatherCondition.containsKey("RainingOrThundering"))
+                lootPoolBuilder.conditionally(WeatherCheckLootCondition.create().raining(true).or(WeatherCheckLootCondition.create().thundering(true)));
+        }
     }
 
     private static void setEntries(LootPool.Builder lootPoolBuilder, LootPoolObject currentLootPool) {

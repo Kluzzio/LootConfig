@@ -1,11 +1,10 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "com.github.levoment.chestlootmodifier.mixins",
+  "package": "com.github.kluzzio.lootconfig.mixins",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "LootableContainerBlockEntityAccessor",
-    "LootableContainerBlockEntityMixin"
+    "LootManagerMixin"
   ],
   "client": [
   ],

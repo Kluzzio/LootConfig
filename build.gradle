@@ -49,7 +49,7 @@ java {
 }
 
 jar {
-	from("UNLICENSE") {
+	from("LICENSE") {
 		rename { "${it}_${project.archivesBaseName}"}
 	}
 }

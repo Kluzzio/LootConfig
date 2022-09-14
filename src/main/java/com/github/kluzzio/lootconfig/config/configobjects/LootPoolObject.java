@@ -1,4 +1,4 @@
-package com.github.levoment.chestlootmodifier.config.configobjects;
+package com.github.kluzzio.lootconfig.config.configobjects;
 
 import java.util.List;
 import java.util.Map;
@@ -11,11 +11,11 @@ public class LootPoolObject {
     private float LootingRollSuccessModifier;
     private float MinBonusRolls;
     private float MaxBonusRolls;
-    private List<String> Conditions;
+    private Map<String, Map<String, List<Integer>>> Conditions;
     private Map<String, List<Integer>> Entries;
 
     public LootPoolObject(int minRolls, int maxRolls, float rollSuccessChance, float lootingRollSuccessModifier,
-                          float minBonusRolls, float maxBonusRolls, List<String> conditions, Map<String, List<Integer>> entries) {
+                          float minBonusRolls, float maxBonusRolls, Map<String, Map<String, List<Integer>>> conditions, Map<String, List<Integer>> entries) {
         MinRolls = minRolls;
         MaxRolls = maxRolls;
         RollSuccessChance = rollSuccessChance;
@@ -50,7 +50,7 @@ public class LootPoolObject {
         return MaxBonusRolls;
     }
 
-    public List<String> getConditions() {
+    public Map<String, Map<String, List<Integer>>> getConditions() {
         return Conditions;
     }
 

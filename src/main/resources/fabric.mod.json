@@ -1,29 +1,29 @@
 {
   "schemaVersion": 1,
-  "id": "chestlootmodifier",
+  "id": "lootconfig",
   "version": "${version}",
 
   "name": "Chest Loot Modifier",
   "description": "Customize chests loot",
   "authors": [
-    "Levoment"
+    "Kluzzio"
   ],
   "contact": {
     "homepage": "",
     "sources": ""
   },
 
-  "license": "The Unlicense",
-  "icon": "assets/chestlootmodifier/icon.png",
+  "license": "MIT",
+  "icon": "assets/lootconfig/icon.png",
 
   "environment": "*",
   "entrypoints": {
     "main": [
-      "com.github.levoment.chestlootmodifier.ChestLootModifierMod"
+      "com.github.kluzzio.lootconfig.LootConfig"
     ]
   },
   "mixins": [
-    "chestlootmodifier.mixins.json"
+    "lootconfig.mixins.json"
   ],
 
   "depends": {

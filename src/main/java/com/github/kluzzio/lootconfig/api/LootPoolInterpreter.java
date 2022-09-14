@@ -1,6 +1,7 @@
-package com.github.levoment.chestlootmodifier.api;
+package com.github.kluzzio.lootconfig.api;
 
-import com.github.levoment.chestlootmodifier.ChestLootModifierMod;
+import com.github.kluzzio.lootconfig.LootConfig;
+import com.google.gson.JsonSyntaxException;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.loot.LootPool;
@@ -21,19 +22,27 @@ public class LootPoolInterpreter {
         if (entry.contains("(") && entry.contains(")")) {
             String potionID = entry.substring(entry.indexOf("(") + 1, entry.indexOf(")"));
             entry = entry.substring(0, entry.contains(" ") ? entry.indexOf(" ") : entry.indexOf("("));
-            Item item = Registry.ITEM.get(new Identifier(entry));
+            String entryCopy = entry;
+            Item item = Registry.ITEM.getOrEmpty(new Identifier(entry)).orElseThrow(() -> {
+                throw new JsonSyntaxException(LootConfig.MOD_NAME_LOG_ID + " Unknown item '" + new Identifier(entryCopy) + "'");
+            });
             if (item == Items.POTION || item == Items.TIPPED_ARROW) {
-                Potion potion = Registry.POTION.get(new Identifier(potionID));
+                Potion potion = Registry.POTION.getOrEmpty(new Identifier(potionID)).orElseThrow(() -> {
+                    throw new JsonSyntaxException(LootConfig.MOD_NAME_LOG_ID + " Unknown potion '" + new Identifier(potionID) + "'");
+                });
                 if (potion == Potions.EMPTY)
-                    ChestLootModifierMod.LOGGER.warn(ChestLootModifierMod.MOD_NAME_LOG_ID + " " + potionID + " was not found as a valid identifier for an potion.");
+                    LootConfig.LOGGER.warn(LootConfig.MOD_NAME_LOG_ID + " " + potionID + " was not found as a valid identifier for an potion.");
                 addPotionAffectedItemToPool(lootPoolBuilder, item, entryInformation, potion);
                 return;
             }
-            ChestLootModifierMod.LOGGER.warn(ChestLootModifierMod.MOD_NAME_LOG_ID + " " + entry + " may have been marked with a potion effect in a lootpool.");
+            LootConfig.LOGGER.warn(LootConfig.MOD_NAME_LOG_ID + " " + entry + " may have been marked with a potion effect in a lootpool.");
         }
-        Item item = Registry.ITEM.get(new Identifier(entry));
+        String entryCopy = entry;
+        Item item = Registry.ITEM.getOrEmpty(new Identifier(entry)).orElseThrow(() -> {
+            throw new JsonSyntaxException(LootConfig.MOD_NAME_LOG_ID + " Unknown item '" + new Identifier(entryCopy) + "'");
+        });
         if (item == Items.AIR)
-            ChestLootModifierMod.LOGGER.warn(ChestLootModifierMod.MOD_NAME_LOG_ID + " " + entry + " was not found as a valid identifier for an item.");
+            LootConfig.LOGGER.warn(LootConfig.MOD_NAME_LOG_ID + " " + entry + " was not found as a valid identifier for an item.");
         else lootPoolBuilder.with(ItemEntry.builder(item).weight(entryInformation.get(1))
                 .apply(SetCountLootFunction.builder(ConstantLootNumberProvider.create(
                         entryInformation.get(0)))));
