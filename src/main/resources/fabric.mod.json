@@ -3,7 +3,7 @@
   "id": "lootconfig",
   "version": "${version}",
 
-  "name": "Chest Loot Modifier",
+  "name": "Loot Config",
   "description": "Customize chests loot",
   "authors": [
     "Kluzzio"
