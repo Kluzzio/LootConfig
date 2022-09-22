@@ -1,6 +1,6 @@
 # Loot Config
 
-![Chest Loot Modifier Icon](./src/main/resources/assets/lootconfig/icon.png)
+![Loot Config Icon](./src/main/resources/assets/lootconfig/icon.png)
 
 ## About
 

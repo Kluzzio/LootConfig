@@ -4,13 +4,13 @@
   "version": "${version}",
 
   "name": "Loot Config",
-  "description": "Customize chests loot",
+  "description": "Gain full customization over the loot tables of Minecraft",
   "authors": [
     "Kluzzio"
   ],
   "contact": {
     "homepage": "https://www.curseforge.com/minecraft/mc-mods/loot-config",
-    "sources": "https://www.curseforge.com/minecraft/mc-mods/loot-config",
+    "sources": "https://github.com/Kluzzio/LootConfig",
     "issues": "https://github.com/Kluzzio/LootConfig/issues"
   },
 
@@ -28,7 +28,7 @@
   ],
 
   "depends": {
-    "fabricloader": ">=0.14.6",
+    "fabricloader": ">=0.14.9",
     "fabric": "*",
     "minecraft": "1.19.x",
     "java": ">=17"
