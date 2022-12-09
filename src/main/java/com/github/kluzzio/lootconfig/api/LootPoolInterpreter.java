@@ -11,8 +11,8 @@ import net.minecraft.loot.function.SetPotionLootFunction;
 import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.Potions;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 import java.util.List;
 
@@ -23,11 +23,11 @@ public class LootPoolInterpreter {
             String potionID = entry.substring(entry.indexOf("(") + 1, entry.indexOf(")"));
             entry = entry.substring(0, entry.contains(" ") ? entry.indexOf(" ") : entry.indexOf("("));
             String entryCopy = entry;
-            Item item = Registry.ITEM.getOrEmpty(new Identifier(entry)).orElseThrow(() -> {
+            Item item = Registries.ITEM.getOrEmpty(new Identifier(entry)).orElseThrow(() -> {
                 throw new JsonSyntaxException(LootConfig.MOD_NAME_LOG_ID + " Unknown item '" + new Identifier(entryCopy) + "'");
             });
             if (item == Items.POTION || item == Items.TIPPED_ARROW) {
-                Potion potion = Registry.POTION.getOrEmpty(new Identifier(potionID)).orElseThrow(() -> {
+                Potion potion = Registries.POTION.getOrEmpty(new Identifier(potionID)).orElseThrow(() -> {
                     throw new JsonSyntaxException(LootConfig.MOD_NAME_LOG_ID + " Unknown potion '" + new Identifier(potionID) + "'");
                 });
                 if (potion == Potions.EMPTY)
@@ -38,7 +38,7 @@ public class LootPoolInterpreter {
             LootConfig.LOGGER.warn(LootConfig.MOD_NAME_LOG_ID + " " + entry + " may have been marked with a potion effect in a lootpool.");
         }
         String entryCopy = entry;
-        Item item = Registry.ITEM.getOrEmpty(new Identifier(entry)).orElseThrow(() -> {
+        Item item = Registries.ITEM.getOrEmpty(new Identifier(entry)).orElseThrow(() -> {
             throw new JsonSyntaxException(LootConfig.MOD_NAME_LOG_ID + " Unknown item '" + new Identifier(entryCopy) + "'");
         });
         if (item == Items.AIR)

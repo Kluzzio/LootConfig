@@ -15,9 +15,10 @@ import net.minecraft.predicate.NumberRange;
 import net.minecraft.predicate.entity.LocationPredicate;
 import net.minecraft.predicate.item.EnchantmentPredicate;
 import net.minecraft.predicate.item.ItemPredicate;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
 
 import java.util.Collection;
 import java.util.List;
@@ -126,13 +127,13 @@ public class LootTableEventHelper {
             Map<String, List<Integer>> conditionSet = conditions.get("LocationCheck_Biome");
             for (String conInfo : conditionSet.keySet()) {
                 lootPoolBuilder.conditionally(LocationCheckLootCondition.builder(LocationPredicate.Builder.create()
-                        .biome(RegistryKey.of(Registry.BIOME_KEY, new Identifier(conInfo)))));
+                        .biome(RegistryKey.of(RegistryKeys.BIOME, new Identifier(conInfo)))));
             }
         }
         if (conditions.containsKey("MatchTool_Enchantment")) {
             Map<String, List<Integer>> matchToolCondition = conditions.get("MatchTool_Enchantment");
             for (String conInfo : matchToolCondition.keySet()) {
-                Enchantment enchantment = Registry.ENCHANTMENT.getOrEmpty(new Identifier(conInfo)).orElseThrow(() -> {
+                Enchantment enchantment = Registries.ENCHANTMENT.getOrEmpty(new Identifier(conInfo)).orElseThrow(() -> {
                     throw new JsonSyntaxException(LootConfig.MOD_NAME_LOG_ID + " Unknown enchantment '" + new Identifier(conInfo) + "'");
                 });
                 lootPoolBuilder.conditionally(MatchToolLootCondition.builder(ItemPredicate.Builder.create()
